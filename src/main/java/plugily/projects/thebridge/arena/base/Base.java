@@ -84,9 +84,9 @@ public class Base {
 
   public String getMaterialColor() {
     switch(color.toLowerCase()) {
-      case "dark_blue":
       case "dark_aqua":
       	return "cyan";
+      case "dark_blue":
       case "aqua":
         return "light_blue";
       case  "dark_green":
