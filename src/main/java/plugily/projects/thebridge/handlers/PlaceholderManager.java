@@ -21,6 +21,7 @@ package plugily.projects.thebridge.handlers;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
+import plugily.projects.thebridge.Constants;
 import plugily.projects.thebridge.api.StatsStorage;
 import plugily.projects.thebridge.arena.Arena;
 import plugily.projects.thebridge.arena.ArenaRegistry;
@@ -40,7 +41,7 @@ public class PlaceholderManager extends PlaceholderExpansion {
 
   @Override
   public String getIdentifier() {
-    return "TheBridge";
+    return Constants.PLUGIN_NAME;
   }
 
   @Override

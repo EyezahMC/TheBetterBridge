@@ -236,7 +236,7 @@ public class Main extends JavaPlugin {
     cuboidSelector = new CuboidSelector(this);
 
     new EventsInitializer().initialize(this);
-    MiscUtils.sendStartUpMessage(this, "TheBridge", getDescription(),true, true);
+    MiscUtils.sendStartUpMessage(this, Constants.PLUGIN_NAME, getDescription(),true, true);
   }
 
   private void registerSoftDependenciesAndServices() {
