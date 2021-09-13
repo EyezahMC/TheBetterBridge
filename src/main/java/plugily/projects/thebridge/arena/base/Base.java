@@ -86,6 +86,7 @@ public class Base {
     switch(color.toLowerCase()) {
       case "dark_blue":
       case "dark_aqua":
+      	return "cyan";
       case "aqua":
         return "light_blue";
       case  "dark_green":
@@ -100,7 +101,9 @@ public class Base {
         return "gray";
       case "light_purple":
         return "magenta";
-        //not used? BROWN, PINK, ORANGE
+      case "gold":
+    	  return "orange";
+        //not used? BROWN, PINK
     }
     return color;
   }
