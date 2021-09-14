@@ -52,14 +52,7 @@ import plugily.projects.thebridge.handlers.rewards.Reward;
 import plugily.projects.thebridge.user.User;
 import plugily.projects.thebridge.utils.Debugger;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -174,7 +167,7 @@ public class Arena extends BukkitRunnable {
           }
           break;
         }
-        if(getTimer() == 0 || forceStart) {
+        if(getTimer() == 0 || forceStart) { // ARENA START CODE IS HERE
           TBGameStartEvent gameStartEvent = new TBGameStartEvent(this);
           Bukkit.getPluginManager().callEvent(gameStartEvent);
           setArenaState(ArenaState.IN_GAME);
@@ -186,7 +179,11 @@ public class Arena extends BukkitRunnable {
             break;
           }
           teleportAllToStartLocation();
-          for(Player player : getPlayers()) {
+          // EYEZAHMC: Make player list random ordered
+	        List<Player> players = new ArrayList<>(getPlayers());
+	        Collections.shuffle(players);
+
+          for(Player player : players) {
             //reset local variables to be 100% sure
             plugin.getUserManager().getUser(player).setStat(StatsStorage.StatisticType.LOCAL_DEATHS, 0);
             plugin.getUserManager().getUser(player).setStat(StatsStorage.StatisticType.LOCAL_KILLS, 0);
