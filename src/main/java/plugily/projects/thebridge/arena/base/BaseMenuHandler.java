@@ -20,6 +20,8 @@
 package plugily.projects.thebridge.arena.base;
 
 
+import jdk.tools.jlink.plugin.Plugin;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import plugily.projects.inventoryframework.gui.GuiItem;
 import plugily.projects.inventoryframework.gui.type.ChestGui;
 import plugily.projects.inventoryframework.pane.StaticPane;
@@ -89,23 +91,7 @@ public class BaseMenuHandler implements Listener {
         itemStack = new ItemBuilder(itemStack).lore(insideTeam).build();
       }
       itemStack = new ItemBuilder(itemStack).name(teamName.replace("%base%", base.getFormattedColor())).build();
-      pane.addItem(new GuiItem(itemStack, e -> {
-        e.setCancelled(true);
-        if(!(e.getWhoClicked() instanceof Player) || !(e.isLeftClick() || e.isRightClick())) {
-          return;
-        }
-        TBPlayerChooseBaseEvent event = new TBPlayerChooseBaseEvent(player, base, arena);
-        Bukkit.getPluginManager().callEvent(event);
-        if(event.isCancelled()) {
-          return;
-        }
-        if(!base.addPlayer(player)) {
-          return;
-        }
-
-        player.sendMessage(plugin.getChatManager().colorMessage("Bases.Team.Base-Choose").replace("%base%", base.getFormattedColor()));
-        e.getWhoClicked().closeInventory();
-      }), x, y);
+      pane.addItem(new GuiItem(itemStack, e -> handleInvClick(e, base, arena, plugin)), x, y);
       x++;
       if(x == 9) {
         x = 0;
@@ -113,6 +99,27 @@ public class BaseMenuHandler implements Listener {
       }
     }
     gui.show(player);
+  }
+
+  // EYEZAHMC - Make it public so that it can be run from the fuck error event
+  public static void handleInvClick(InventoryClickEvent e, Base base, Arena arena, Main plugin) {
+	  e.setCancelled(true);
+	  if(!(e.getWhoClicked() instanceof Player) || !(e.isLeftClick() || e.isRightClick())) {
+		  return;
+	  }
+	  Player player = (Player) e.getWhoClicked(); // Changed local-var reference to event retrieve local var
+
+	  TBPlayerChooseBaseEvent event = new TBPlayerChooseBaseEvent(player, base, arena);
+	  Bukkit.getPluginManager().callEvent(event);
+	  if(event.isCancelled()) {
+		  return;
+	  }
+	  if(!base.addPlayer(player)) {
+		  return;
+	  }
+
+	  player.sendMessage(plugin.getChatManager().colorMessage("Bases.Team.Base-Choose").replace("%base%", base.getFormattedColor()));
+	  e.getWhoClicked().closeInventory();
   }
 
   @EventHandler

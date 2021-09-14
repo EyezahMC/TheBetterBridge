@@ -43,6 +43,7 @@ import plugily.projects.thebridge.arena.base.BaseMenuHandler;
 import plugily.projects.thebridge.commands.arguments.ArgumentsRegistry;
 import plugily.projects.thebridge.events.ChatEvents;
 import plugily.projects.thebridge.events.Events;
+import plugily.projects.thebridge.events.FuckErrorsEvents;
 import plugily.projects.thebridge.events.JoinEvent;
 import plugily.projects.thebridge.events.LobbyEvent;
 import plugily.projects.thebridge.events.QuitEvent;
@@ -223,6 +224,7 @@ public class Main extends JavaPlugin {
     signManager.loadSigns();
     signManager.updateSigns();
     new Events(this);
+    new FuckErrorsEvents(this);
     new LobbyEvent(this);
     new SpectatorItemEvents(this);
     rewardsHandler = new RewardsFactory(this);
