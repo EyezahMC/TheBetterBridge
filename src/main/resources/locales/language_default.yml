@@ -320,7 +320,7 @@ Bases:
     GREEN: "&aLIME_GREEN"
     AQUA: "&bAQUA"
     RED: "&cRED"
-    LIGHT_PURPLE: "&dPINK"
+    LIGHT_PURPLE: "&dMAGENTA"
     YELLOW: "&eYELLOW"
     WHITE: "&fWHITE"
     BOLD: "&lBOLD"
