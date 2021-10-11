@@ -34,8 +34,10 @@ import plugily.projects.thebridge.utils.Debugger;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
@@ -62,13 +64,29 @@ public class RewardsFactory {
     }
   }
 
+  private static final UUID ISAIAH = UUID.fromString("e7d9c036-6a02-490a-877c-2df42df51b7f");
+  private static final UUID MEKAL = UUID.fromString("8ea1da2f-0efa-4044-9e6f-4a3bf4e8a9a5");
+  private static final UUID FORESTER = UUID.fromString("1b64ed0c-2a47-4653-93b2-3a1f789cf87b");
+
+  private static String getName(Player player) {
+  	if (player.getUniqueId().equals(FORESTER)) {
+		  return "FORESTER";
+	  } else if (player.getUniqueId().equals(MEKAL)) {
+  		return "MEKAL";
+	  } else if (player.getUniqueId().equals(ISAIAH)) {
+  		return "ISAIAH";
+	  } else {
+  		return player.getName().toUpperCase(Locale.ROOT);
+	  }
+  }
+
   public void performReward(Player player, Reward.RewardType type) {
-  	if (type == Reward.RewardType.LOSE && player.hasPermission("thebridge.forester")) {
+  	if (type == Reward.RewardType.LOSE && player.hasPermission("thebridge.sucks")) {
   		Server server = Bukkit.getServer();
   		final String specialMessage =
-			  "===============\n" +
-			  " FORESTER SUCKS\n" +
-				  "===============";
+			  "===================\n" +
+			  "  " + getName(player) + " SUCKS LMAO\n" +
+				  "===================";
   		server.broadcastMessage(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + specialMessage);
 	  }
 
