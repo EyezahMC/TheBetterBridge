@@ -21,6 +21,8 @@ package plugily.projects.thebridge.handlers.rewards;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import plugily.projects.commonsbox.minecraft.configuration.ConfigUtils;
@@ -61,6 +63,15 @@ public class RewardsFactory {
   }
 
   public void performReward(Player player, Reward.RewardType type) {
+  	if (type == Reward.RewardType.LOSE && player.hasPermission("thebridge.forester")) {
+  		Server server = Bukkit.getServer();
+  		final String specialMessage =
+			  "===============\n" +
+			  " FORESTER SUCKS\n" +
+				  "===============";
+  		server.broadcastMessage(ChatColor.GOLD.toString() + ChatColor.BOLD.toString() + specialMessage);
+	  }
+
     if(!enabled) {
       return;
     }

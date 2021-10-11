@@ -54,6 +54,7 @@ import plugily.projects.thebridge.utils.Debugger;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 /**
  * @author Tigerpanzer_02
@@ -335,14 +336,27 @@ public class ArenaManager {
             }
             break;
           case POINTS:
-            if(arena.getWinner().getPlayers().contains(player)) {
-              plugin.getUserManager().addStat(player, StatsStorage.StatisticType.WINS);
-              plugin.getUserManager().addExperience(player, 5);
-              plugin.getRewardsHandler().performReward(player, Reward.RewardType.WON);
-            } else {
-              plugin.getUserManager().addStat(player, StatsStorage.StatisticType.LOSES);
-              plugin.getRewardsHandler().performReward(player, Reward.RewardType.LOSE);
-            }
+          	// EYEZAHMC: Draw Handling
+	          Base winner = arena.getWinner();
+
+	          if (winner != null) {
+		          if (winner.getPlayers().contains(player)) {
+			          plugin.getUserManager().addStat(player, StatsStorage.StatisticType.WINS);
+			          plugin.getUserManager().addExperience(player, 5);
+			          plugin.getRewardsHandler().performReward(player, Reward.RewardType.WON);
+		          } else {
+			          plugin.getUserManager().addStat(player, StatsStorage.StatisticType.LOSES);
+			          plugin.getRewardsHandler().performReward(player, Reward.RewardType.LOSE);
+		          }
+	          } else {
+	          	if (arena.lastDraw.stream().anyMatch(b -> b.getPlayers().contains(player))) {
+			          plugin.getRewardsHandler().performReward(player, Reward.RewardType.DRAW);
+			          plugin.getUserManager().addStat(player, StatsStorage.StatisticType.DRAWS);
+		          } else {
+			          plugin.getUserManager().addStat(player, StatsStorage.StatisticType.LOSES);
+			          plugin.getRewardsHandler().performReward(player, Reward.RewardType.LOSE);
+		          }
+	          }
             break;
           default:
             break;
@@ -385,11 +399,14 @@ public class ArenaManager {
   }
 
   private static String formatSummaryPlaceholders(String msg, Arena arena, Player player) {
+  	// EYEZAHMC: Add Draw Conditions
     String formatted = msg;
+    Base winner = arena.getWinner();
 
     switch(arena.getMode()) {
       case POINTS:
-        formatted = StringUtils.replace(formatted, "%summary%", LanguageManager.getLanguageMessage("In-Game.Messages.Game-End-Messages.Summary-Base-Points-Win"));
+      	// TODO better message and stuff
+        formatted = StringUtils.replace(formatted, "%summary%", winner == null ? "Draw: %base%" : LanguageManager.getLanguageMessage("In-Game.Messages.Game-End-Messages.Summary-Base-Points-Win"));
         break;
       case HEARTS:
         formatted = StringUtils.replace(formatted, "%summary%", LanguageManager.getLanguageMessage("In-Game.Messages.Game-End-Messages.Summary-Base-Hearts-Win"));
@@ -397,8 +414,14 @@ public class ArenaManager {
       default:
         break;
     }
-    formatted = StringUtils.replace(formatted, "%base%", arena.getWinner().getFormattedColor());
 
+    if (winner == null) {
+    	formatted = StringUtils.replace(formatted, "%base%", arena.lastDraw.stream().map(b -> ", ".concat(b.getFormattedColor())).collect(Collectors.joining()).substring(2));
+    } else {
+	    formatted = StringUtils.replace(formatted, "%base%", winner.getFormattedColor());
+    }
+
+    // This next bit assumes winners != null
     if(formatted.contains("%base_players%") || formatted.contains("%base_scored%")) {
       StringBuilder baseMember = new StringBuilder();
       int baseScored = 0;

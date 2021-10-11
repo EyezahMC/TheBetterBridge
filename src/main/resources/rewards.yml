@@ -48,3 +48,5 @@ rewards:
     - You scored ;)
   resetround:
     - Round gets reset!
+  draw:
+    - say Lmao noob

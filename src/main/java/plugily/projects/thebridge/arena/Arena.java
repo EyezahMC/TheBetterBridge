@@ -19,6 +19,8 @@
 
 package plugily.projects.thebridge.arena;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -85,6 +87,7 @@ public class Arena extends BukkitRunnable {
   private int out = 0;
   private Cuboid arenaBorder;
   private Base winner;
+  public List<Base> lastDraw;
 
   public Arena(String id) {
     this.id = id;
@@ -239,13 +242,23 @@ public class Arena extends BukkitRunnable {
           plugin.getServer().setWhitelist(getMaximumPlayers() <= getPlayers().size());
         }
         if(getTimer() <= 0) {
-          Base highestValue = bases.get(0);
-          for(Base base : bases) {
-            if(highestValue.getPoints() < base.getPoints()) {
-              highestValue = base;
+        	// EYEZAHMC: Add Draw Condition
+          List<Base> winners = new ArrayList<>();
+          int oldHighestValue = -1000; // Small number bc will always be greater than this and thus override it
+
+          for (Base base : bases) {
+            if (oldHighestValue < base.getPoints()) {
+              oldHighestValue = base.getPoints();
+              winners = Lists.newArrayList(base);
+            } else if (oldHighestValue == base.getPoints()) {
+            	winners.add(base);
             }
           }
-          winner = highestValue;
+          winner = winners.size() > 1 ? null : winners.get(0);
+
+          if (winner == null) {
+          	lastDraw = winners;
+          }
           ArenaManager.stopGame(false, this);
         }
         if(getTimer() == 30 || getTimer() == 60 || getTimer() == 120) {
@@ -645,6 +658,7 @@ public class Arena extends BukkitRunnable {
     round = 0;
     resetRound = 0;
     winner = null;
+    lastDraw = null;
   }
 
   int round = 0;
